@@ -1,3 +1,7 @@
+import Steps.BaseSteps;
+import Steps.CustomerSteps;
+import Steps.MainSteps;
+import Steps.ManagerSteps;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.logevents.SelenideLogger;
@@ -6,13 +10,19 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Alert;
 
-import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selectors.byXpath;
 import static com.codeborne.selenide.Selenide.*;
-import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.WebDriverRunner.getWebDriver;
 
 public class EmptyTest {
+
+    BaseSteps baseSteps = new BaseSteps();
+
+    MainSteps mainSteps = new MainSteps();
+
+    CustomerSteps customerSteps = new CustomerSteps();
+
+    ManagerSteps managerSteps = new ManagerSteps();
 
     @BeforeAll
     static void setupAllureReports() {
@@ -26,28 +36,28 @@ public class EmptyTest {
     public void allElementsVisibleMain(){
         open("https://www.globalsqa.com/angularJs-protractor/BankingProject/#/login");
         getWebDriver().manage().window().maximize();
-        $(".btn.home").shouldBe(visible);
-        $(".mainHeading").shouldBe(visible);
-        $(byXpath("/html/body/div/div/div[2]/div/div[1]/div[1]/button")).shouldBe(visible); // Customer Login
-        $(byXpath("/html/body/div/div/div[2]/div/div[1]/div[2]/button")).shouldBe(visible); // Bank Manager Login
+        mainSteps.homeButtonIsVisible();
+        mainSteps.mainHeaderIsVisible();
+        mainSteps.customerLoginIsVisible();
+        mainSteps.bankManagerLoginIsVisible();
     }
 
     @Test
     public void buttonCustomerLoginUsable() {
         open("https://www.globalsqa.com/angularJs-protractor/BankingProject/#/login");
         getWebDriver().manage().window().maximize();
-        $(byXpath("/html/body/div/div/div[2]/div/div[1]/div[1]/button")).click();
-        $("#userSelect").shouldBe(visible);
+        mainSteps.customerLoginButtonClick();
+        customerSteps.selectUserNameIsVisible();
     }
 
     @Test
     public void buttonBankManagerLoginUsable() {
         open("https://www.globalsqa.com/angularJs-protractor/BankingProject/#/login");
         getWebDriver().manage().window().maximize();
-        $(byXpath("/html/body/div/div/div[2]/div/div[1]/div[2]/button")).click();
-        $(byXpath("/html/body/div/div/div[2]/div/div[1]/button[1]")).shouldBe(visible); // add customer
-        $(byXpath("/html/body/div/div/div[2]/div/div[1]/button[2]")).shouldBe(visible); // open account
-        $(byXpath("/html/body/div/div/div[2]/div/div[1]/button[3]")).shouldBe(visible); // customers
+        mainSteps.bankManagerLoginClick();
+        managerSteps.addCustomerButtonIsVisible();
+        managerSteps.openAccountButtonIsVisible();
+        managerSteps.customersButtonIsVisible();
     }
 
     // Bank Manager Page
@@ -56,44 +66,44 @@ public class EmptyTest {
     public void allElementsVisibleManager() {
         open("https://www.globalsqa.com/angularJs-protractor/BankingProject/#/manager");
         getWebDriver().manage().window().maximize();
-        $(".btn.home").shouldBe(visible);
-        $(".mainHeading").shouldBe(visible);
-        $(byXpath("/html/body/div/div/div[2]/div/div[1]/button[1]")).shouldBe(visible); // add customer
-        $(byXpath("/html/body/div/div/div[2]/div/div[1]/button[2]")).shouldBe(visible); // open account
-        $(byXpath("/html/body/div/div/div[2]/div/div[1]/button[3]")).shouldBe(visible); // customers
+        mainSteps.homeButtonIsVisible();
+        mainSteps.mainHeaderIsVisible();
+        managerSteps.addCustomerButtonIsVisible();
+        managerSteps.openAccountButtonIsVisible();
+        managerSteps.customersButtonIsVisible();
     }
 
     @Test
     public void addCustomer() {
         open("https://www.globalsqa.com/angularJs-protractor/BankingProject/#/manager");
         getWebDriver().manage().window().maximize();
-        $(byXpath("/html/body/div/div/div[2]/div/div[1]/button[1]")).click();
-        $(byXpath("/html/body/div/div/div[2]/div/div[2]/div/div/form/div[1]/input")).setValue("Ivan");
-        $(byXpath("/html/body/div/div/div[2]/div/div[2]/div/div/form/div[2]/input")).setValue("Ivanov");
-        $(byXpath("/html/body/div/div/div[2]/div/div[2]/div/div/form/div[3]/input")).setValue("123");
-        $(byXpath("/html/body/div/div/div[2]/div/div[2]/div/div/form/button")).click();
+        managerSteps.addCustomerButtonClick();
+        managerSteps.firstNameInputSetValue();
+        managerSteps.lastNameInputSetValue();
+        managerSteps.postCodeInputSetValue();
+        managerSteps.formAddCustomerButtonClick();
         Alert alert = Selenide.switchTo().alert();
         alert.accept();
-        $(byXpath("/html/body/div/div/div[2]/div/div[1]/button[3]")).click();
-        $(byText("Ivan")).shouldBe(visible);
-        $(byText("Ivanov")).shouldBe(visible);
-        $(byText("123")).shouldBe(visible);
+        managerSteps.customersButtonClick();
+        managerSteps.userFirstNameInTableIsVisible();
+        managerSteps.userLastNameInTableIsVisible();
+        managerSteps.userPostCodeInTableIsVisible();
     }
 
     @Test
     public void openCustomerAccount() {
         addCustomer();
         open("https://www.globalsqa.com/angularJs-protractor/BankingProject/#/manager");
-        $(byXpath("/html/body/div/div/div[2]/div/div[1]/button[2]")).click();
-        $("#userSelect").selectOption("Ivan Ivanov");
-        $("#currency").selectOption("Dollar");
-        $(byText("Process")).click();
+        managerSteps.openAccountButtonClick();
+        managerSteps.userSelectDropdown();
+        managerSteps.currencySelectDropdown();
+        managerSteps.processButtonClick();
         Alert alert = Selenide.switchTo().alert();
         alert.accept();
-        $(byXpath("/html/body/div/div/div[2]/div/div[1]/button[3]")).click();
+        managerSteps.customersButtonClick();
         SelenideElement cell = $("table tr:nth-child(6) td:nth-child(4)");
         String cellText = cell.getText();
-        if (!cellText.matches("\\d+")) {
+        if (!cellText.matches("(\\d+\\s*)+")) {
             throw new AssertionError("Cell text is not a digit: " + cellText);
         }
     }
@@ -102,18 +112,18 @@ public class EmptyTest {
     public void deleteCustomerAccount() {
         addCustomer();
         open("https://www.globalsqa.com/angularJs-protractor/BankingProject/#/manager");
-        $(byXpath("/html/body/div/div/div[2]/div/div[1]/button[3]")).click();
-        $(byXpath("/html/body/div/div/div[2]/div/div[2]/div/div/table/tbody/tr[6]/td[5]/button")).click();
-        $(byText("Ivan")).shouldBe(not(visible));
+        managerSteps.customersButtonClick();
+        managerSteps.deleteButtonTableClick();
+        managerSteps.nameInTableIsNotVisible();
     }
 
     @Test
     public void homeButtonManagerPage() {
         open("https://www.globalsqa.com/angularJs-protractor/BankingProject/#/manager");
         getWebDriver().manage().window().maximize();
-        $(".btn.home").click();
-        $(byXpath("/html/body/div/div/div[2]/div/div[1]/div[1]/button")).shouldBe(visible);
-        $(byXpath("/html/body/div/div/div[2]/div/div[1]/div[2]/button")).shouldBe(visible);
+        managerSteps.homeButtonClick();
+        mainSteps.customerLoginIsVisible();
+        mainSteps.bankManagerLoginIsVisible();
     }
 
 
@@ -123,20 +133,20 @@ public class EmptyTest {
     public void allElementsVisibleCustomerPage() {
         open("https://www.globalsqa.com/angularJs-protractor/BankingProject/#/customer");
         getWebDriver().manage().window().maximize();
-        $("#userSelect").selectOption("Hermoine Granger");
-        $(".btn.home").shouldBe(visible);
-        $(".mainHeading").shouldBe(visible);
-        $(byXpath("/html/body/div/div/div[2]/div/form/div/label")).shouldBe(visible); // Your Name label
-        $(".btn.btn-default").shouldBe(visible);
+        customerSteps.selectUserName();
+        mainSteps.homeButtonIsVisible();
+        mainSteps.mainHeaderIsVisible();
+        customerSteps.yourNameLabelIsVisible();
+        customerSteps.loginButtonIsVisible();
     }
 
     @Test
     public void customerCanLogin() {
         addCustomer();
         open("https://www.globalsqa.com/angularJs-protractor/BankingProject/#/login");
-        $(byXpath("/html/body/div/div/div[2]/div/div[1]/div[1]/button")).click();
-        $("#userSelect").selectOption("Ivan Ivanov");
-        $(".btn.btn-default").click();
+        mainSteps.customerLoginButtonClick();
+        customerSteps.userSelectCustomerName();
+        customerSteps.loginButtonClick();
         String spanText = $(".fontBig.ng-binding").getText();
         if (!spanText.matches("Ivan Ivanov")) {
             throw new AssertionError("Name is not Ivan Ivanov");
@@ -146,17 +156,17 @@ public class EmptyTest {
     @Test
     public void customerCanLogout() {
         customerCanLogin();
-        $(".btn.logout").click();
-        $("#userSelect").shouldBe(visible);
+        customerSteps.logoutButtonClick();
+        customerSteps.selectUserNameIsVisible();
     }
 
     @Test
     public void customerCanAddFunds() {
         openCustomerAccount();
         customerCanLogin();
-        $(byXpath("/html/body/div/div/div[2]/div/div[3]/button[2]")).click();
-        $(byXpath("/html/body/div/div/div[2]/div/div[4]/div/form/div/input")).setValue("100");
-        $(byXpath("/html/body/div/div/div[2]/div/div[4]/div/form/button")).click();
+        customerSteps.depositButtonClick();
+        customerSteps.amountInputSetValue();
+        customerSteps.depositAmountButtonClick();
         String depositText = $(".error.ng-binding").getText();
         if (!depositText.matches("Deposit Successful")) {
             throw new AssertionError("deposit unsuccessful");
@@ -170,10 +180,10 @@ public class EmptyTest {
     @Test
     public void customerCanWithdrawFunds() {
         customerCanAddFunds();
-        $(byXpath("/html/body/div/div/div[2]/div/div[3]/button[3]")).click();
+        customerSteps.withdrawButtonClick();
         Selenide.sleep(3000);
-        $(byXpath("/html/body/div/div/div[2]/div/div[4]/div/form/div/input")).setValue("100");
-        $(byXpath("/html/body/div/div/div[2]/div/div[4]/div/form/button")).click();
+        customerSteps.withdrawInputSetValue100();
+        customerSteps.withdrawAmountButtonClick();
         String withdrawText = $(".error.ng-binding").getText();
         if (!withdrawText.matches("Transaction successful")) {
             throw new AssertionError("transaction unsuccessful");
@@ -187,10 +197,10 @@ public class EmptyTest {
     @Test
     public void cannotWithdrawMoreThanHave() {
         customerCanAddFunds();
-        $(byXpath("/html/body/div/div/div[2]/div/div[3]/button[3]")).click();
+        customerSteps.withdrawButtonClick();
         Selenide.sleep(3000);
-        $(byXpath("/html/body/div/div/div[2]/div/div[4]/div/form/div/input")).setValue("1111");
-        $(byXpath("/html/body/div/div/div[2]/div/div[4]/div/form/button")).click();
+        customerSteps.withdrawInputSetValue1111();
+        customerSteps.withdrawAmountButtonClick();
         String withdrawText = $(".error.ng-binding").getText();
         if (!withdrawText.matches("Transaction Failed. You can not withdraw amount more than the balance.")) {
             throw new AssertionError("fail");
@@ -204,8 +214,8 @@ public class EmptyTest {
     @Test
     public void homeButtonCustomerPage() {
         open("https://www.globalsqa.com/angularJs-protractor/BankingProject/#/customer");
-        $(".btn.home").click();
-        $(byXpath("/html/body/div/div/div[2]/div/div[1]/div[1]/button")).shouldBe(visible);
-        $(byXpath("/html/body/div/div/div[2]/div/div[1]/div[2]/button")).shouldBe(visible);
+        managerSteps.homeButtonClick();
+        mainSteps.customerLoginIsVisible();
+        mainSteps.bankManagerLoginIsVisible();
     }
 }
