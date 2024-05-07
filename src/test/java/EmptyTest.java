@@ -24,12 +24,6 @@ public class EmptyTest {
 
     ManagerSteps managerSteps = new ManagerSteps();
 
-    @BeforeAll
-    static void setupAllureReports() {
-        SelenideLogger.addListener("AllureSelenide", new AllureSelenide());
-    }
-
-
     // Main Page
 
     @Test
