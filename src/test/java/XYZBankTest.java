@@ -4,17 +4,13 @@ import Steps.MainSteps;
 import Steps.ManagerSteps;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
-import com.codeborne.selenide.logevents.SelenideLogger;
-import io.qameta.allure.selenide.AllureSelenide;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Alert;
 
 import static com.codeborne.selenide.Selectors.byXpath;
 import static com.codeborne.selenide.Selenide.*;
-import static com.codeborne.selenide.WebDriverRunner.getWebDriver;
 
-public class EmptyTest {
+public class XYZBankTest {
 
     BaseSteps baseSteps = new BaseSteps();
 
@@ -28,8 +24,8 @@ public class EmptyTest {
 
     @Test
     public void allElementsVisibleMain(){
-        open("https://www.globalsqa.com/angularJs-protractor/BankingProject/#/login");
-        getWebDriver().manage().window().maximize();
+        baseSteps.openURLLogin();
+        baseSteps.maximizeWindow();
         mainSteps.homeButtonIsVisible();
         mainSteps.mainHeaderIsVisible();
         mainSteps.customerLoginIsVisible();
@@ -38,16 +34,16 @@ public class EmptyTest {
 
     @Test
     public void buttonCustomerLoginUsable() {
-        open("https://www.globalsqa.com/angularJs-protractor/BankingProject/#/login");
-        getWebDriver().manage().window().maximize();
+        baseSteps.openURLLogin();
+        baseSteps.maximizeWindow();
         mainSteps.customerLoginButtonClick();
         customerSteps.selectUserNameIsVisible();
     }
 
     @Test
     public void buttonBankManagerLoginUsable() {
-        open("https://www.globalsqa.com/angularJs-protractor/BankingProject/#/login");
-        getWebDriver().manage().window().maximize();
+        baseSteps.openURLLogin();
+        baseSteps.maximizeWindow();
         mainSteps.bankManagerLoginClick();
         managerSteps.addCustomerButtonIsVisible();
         managerSteps.openAccountButtonIsVisible();
@@ -58,8 +54,8 @@ public class EmptyTest {
 
     @Test
     public void allElementsVisibleManager() {
-        open("https://www.globalsqa.com/angularJs-protractor/BankingProject/#/manager");
-        getWebDriver().manage().window().maximize();
+        baseSteps.openURLManager();
+        baseSteps.maximizeWindow();
         mainSteps.homeButtonIsVisible();
         mainSteps.mainHeaderIsVisible();
         managerSteps.addCustomerButtonIsVisible();
@@ -69,15 +65,14 @@ public class EmptyTest {
 
     @Test
     public void addCustomer() {
-        open("https://www.globalsqa.com/angularJs-protractor/BankingProject/#/manager");
-        getWebDriver().manage().window().maximize();
+        baseSteps.openURLManager();
+        baseSteps.maximizeWindow();
         managerSteps.addCustomerButtonClick();
         managerSteps.firstNameInputSetValue();
         managerSteps.lastNameInputSetValue();
         managerSteps.postCodeInputSetValue();
         managerSteps.formAddCustomerButtonClick();
-        Alert alert = Selenide.switchTo().alert();
-        alert.accept();
+        baseSteps.switchToAlertAndAccept();
         managerSteps.customersButtonClick();
         managerSteps.userFirstNameInTableIsVisible();
         managerSteps.userLastNameInTableIsVisible();
@@ -87,7 +82,7 @@ public class EmptyTest {
     @Test
     public void openCustomerAccount() {
         addCustomer();
-        open("https://www.globalsqa.com/angularJs-protractor/BankingProject/#/manager");
+        baseSteps.openURLManager();
         managerSteps.openAccountButtonClick();
         managerSteps.userSelectDropdown();
         managerSteps.currencySelectDropdown();
@@ -105,7 +100,7 @@ public class EmptyTest {
     @Test
     public void deleteCustomerAccount() {
         addCustomer();
-        open("https://www.globalsqa.com/angularJs-protractor/BankingProject/#/manager");
+        baseSteps.openURLManager();
         managerSteps.customersButtonClick();
         managerSteps.deleteButtonTableClick();
         managerSteps.nameInTableIsNotVisible();
@@ -113,8 +108,8 @@ public class EmptyTest {
 
     @Test
     public void homeButtonManagerPage() {
-        open("https://www.globalsqa.com/angularJs-protractor/BankingProject/#/manager");
-        getWebDriver().manage().window().maximize();
+        baseSteps.openURLManager();
+        baseSteps.maximizeWindow();
         managerSteps.homeButtonClick();
         mainSteps.customerLoginIsVisible();
         mainSteps.bankManagerLoginIsVisible();
@@ -125,8 +120,8 @@ public class EmptyTest {
 
     @Test
     public void allElementsVisibleCustomerPage() {
-        open("https://www.globalsqa.com/angularJs-protractor/BankingProject/#/customer");
-        getWebDriver().manage().window().maximize();
+        baseSteps.openURLCustomer();
+        baseSteps.maximizeWindow();
         customerSteps.selectUserName();
         mainSteps.homeButtonIsVisible();
         mainSteps.mainHeaderIsVisible();
@@ -137,7 +132,7 @@ public class EmptyTest {
     @Test
     public void customerCanLogin() {
         addCustomer();
-        open("https://www.globalsqa.com/angularJs-protractor/BankingProject/#/login");
+        baseSteps.openURLLogin();
         mainSteps.customerLoginButtonClick();
         customerSteps.userSelectCustomerName();
         customerSteps.loginButtonClick();
@@ -207,7 +202,7 @@ public class EmptyTest {
 
     @Test
     public void homeButtonCustomerPage() {
-        open("https://www.globalsqa.com/angularJs-protractor/BankingProject/#/customer");
+        baseSteps.openURLCustomer();
         managerSteps.homeButtonClick();
         mainSteps.customerLoginIsVisible();
         mainSteps.bankManagerLoginIsVisible();
